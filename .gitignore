@@ -1,0 +1,9 @@
+# Secret configuration
+.env
+
+# Python virtual environment
+.venv/
+
+# Python-generated files
+__pycache__/
+*.pyc
