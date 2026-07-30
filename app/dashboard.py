@@ -70,6 +70,12 @@ app.layout = html.Div(
             clearable=False,
         ),
 
+        html.H3("Country summary"),
+
+        html.Div(
+            id="country-profile"
+        ),
+
         html.H3("Vaccines used by this country"),
 
         html.P(
@@ -116,11 +122,12 @@ app.layout = html.Div(
 @app.callback(
     Output("covid-chart", "figure"),
     Output("country-vaccines", "children"),
+    Output("country-profile", "children"),
     Input("country-dropdown", "value"),
 )
 def update_chart(country):
 
-    # Ask FastAPI for the selected country's COVID data
+    # Ask FastAPI for the selected country's data
     response = requests.get(
         f"{API_URL}/covid/{country}",
         timeout=30,
@@ -128,8 +135,43 @@ def update_chart(country):
 
     covid_data = response.json()["data"]
 
-    # Convert the API result into a pandas DataFrame
+    # Convert the API response into a DataFrame
     dataframe = pd.DataFrame(covid_data)
+
+    # Get the latest row
+    latest_row = dataframe.iloc[-1]
+
+    # Prepare population for display
+    if pd.isna(latest_row["population"]):
+        population = "No data"
+    else:
+        population = (
+            f"{int(latest_row['population']):,}"
+        )
+
+    # Prepare population density for display
+    if pd.isna(latest_row["density_p_km2"]):
+        density = "No data"
+    else:
+        density = (
+            f"{int(latest_row['density_p_km2']):,}"
+        )
+
+    # Prepare life expectancy for display
+    if pd.isna(latest_row["life_expectancy"]):
+        life_expectancy = "No data"
+    else:
+        life_expectancy = (
+            f"{float(latest_row['life_expectancy']):.1f}"
+        )
+
+    # Prepare healthcare expenditure for display
+    if pd.isna(latest_row["health_expenditure"]):
+        health_expenditure = "No data"
+    else:
+        health_expenditure = (
+            f"{float(latest_row['health_expenditure']):.2f}%"
+        )
 
     # Create the line chart
     figure = px.line(
@@ -146,6 +188,7 @@ def update_chart(country):
     )
 
     if vaccine_response.status_code == 200:
+
         country_vaccines = (
             vaccine_response.json()["vaccines"]
         )
@@ -155,7 +198,39 @@ def update_chart(country):
     else:
         vaccine_text = "No vaccine information available"
 
-    return figure, vaccine_text
+    # Create the country profile
+    country_profile = [
+        html.P(
+            f"Latest cases: "
+            f"{int(latest_row['cases']):,}"
+        ),
+
+        html.P(
+            f"Latest deaths: "
+            f"{int(latest_row['deaths']):,}"
+        ),
+
+        html.P(
+            f"Population: {population}"
+        ),
+
+        html.P(
+            f"Population density: "
+            f"{density} people per km²"
+        ),
+
+        html.P(
+            f"Life expectancy: "
+            f"{life_expectancy} years"
+        ),
+
+        html.P(
+            f"Out-of-pocket healthcare expenditure: "
+            f"{health_expenditure}"
+        ),
+    ]
+
+    return figure, vaccine_text, country_profile
 
 
 # Update the vaccine section

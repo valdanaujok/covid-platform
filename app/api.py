@@ -84,19 +84,21 @@ def get_countries():
 @app.get("/covid/{country}")
 def get_covid_data(country: str):
 
-    # Connect to Snowflake
     connection = get_snowflake_connection()
     cursor = connection.cursor()
 
-    # Get COVID data for the selected country
     cursor.execute(
         """
         SELECT
             TO_CHAR(DATE, 'YYYY-MM-DD'),
             CASES,
-            DEATHS
+            DEATHS,
+            POPULATION,
+            DENSITY_P_KM2,
+            LIFE_EXPECTANCY,
+            OUT_OF_POCKET_HEALTH_EXPENDITURE
         FROM COVID_PROJECT_DB.ANALYTICS.COVID_GOLD_TABLE
-        WHERE UPPER(COUNTRY_REGION) = UPPER(%s)
+        WHERE UPPER(TRIM(COUNTRY_REGION)) = UPPER(TRIM(%s))
         ORDER BY DATE
         """,
         (country,),
@@ -107,14 +109,6 @@ def get_covid_data(country: str):
     cursor.close()
     connection.close()
 
-    # Check whether Snowflake found the country
-    if not rows:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Country '{country}' was not found",
-            )
-    
-    # Create a list for the results
     data = []
 
     for row in rows:
@@ -123,6 +117,10 @@ def get_covid_data(country: str):
                 "date": row[0],
                 "cases": row[1],
                 "deaths": row[2],
+                "population": row[3],
+                "density_p_km2": row[4],
+                "life_expectancy": row[5],
+                "health_expenditure": row[6],
             }
         )
 
