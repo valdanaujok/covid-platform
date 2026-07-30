@@ -1,2 +1,7 @@
 python-dotenv
 snowflake-snowpark-python
+pymongo
+fastapi[standard]
+dash
+plotly
+requests
