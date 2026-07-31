@@ -70,6 +70,10 @@ Before starting the project, install:
 
 The Snowflake database and tables must already exist and be accessible to the configured Snowflake user.
 
+Please use Linux!
+
+For Windows, you might need to change import on api.py
+
 ### Setup
 1. Download the project
 Clone the GitHub repository:
@@ -97,7 +101,7 @@ SNOWFLAKE_DATABASE=COVID_PROJECT_DB
 SNOWFLAKE_SCHEMA=ANALYTICS
 SNOWFLAKE_ROLE=your_snowflake_role
 
-MONGODB_URI=your_mongodb_atlas_connection_string
+MONGODB_URI=mongodb://localhost:27017
 MONGODB_DATABASE=covid_project
 ```
 ### Running the project
@@ -192,7 +196,7 @@ EDA helps find problems in the data before the data is used by the API and dashb
 * Python – connects and processes the different parts of the project.
 * Pandas – works with tabular data.
 * FastAPI – provides API endpoints.
-* MongoDB Atlas – stores comments and annotations.
+* MongoDB – stores comments and annotations.
 * Dash – creates the interactive web application.
 * Plotly – creates the charts displayed by Dash.
 * Requests – allows the dashboard to request data from FastAPI.

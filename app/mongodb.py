@@ -8,14 +8,14 @@ from pymongo import MongoClient
 
 # Load settings from the .env file
 env_path = Path(__file__).parent.parent / ".env"
-load_dotenv(env_path)
+load_dotenv(env_path, override=True)
 
 # Get the MongoDB connection address
 mongodb_uri = os.getenv("MONGODB_URI")
 
 try:
     # Connect to MongoDB
-    client = MongoClient(mongodb_uri)
+    client = MongoClient(mongodb_uri)  # 5-second timeout
 
     # Check the connection
     client.admin.command("ping")
