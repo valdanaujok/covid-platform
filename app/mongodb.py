@@ -15,7 +15,7 @@ mongodb_uri = os.getenv("MONGODB_URI")
 
 try:
     # Connect to MongoDB
-    client = MongoClient(mongodb_uri)  # 5-second timeout
+    client = MongoClient(mongodb_uri)
 
     # Check the connection
     client.admin.command("ping")

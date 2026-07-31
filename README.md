@@ -36,7 +36,6 @@ The main Snowflake table contains:
 * Population
 * Population density
 * Birth rate
-* CO2 emissions
 * Life expectancy
 * Out-of-pocket health expenditure
 
@@ -193,12 +192,8 @@ EDA helps find problems in the data before the data is used by the API and dashb
 
 ## Technologies used
 * Snowflake – stores COVID-19, demographic and vaccine data.
-* Python – connects and processes the different parts of the project.
-* Pandas – works with tabular data.
 * FastAPI – provides API endpoints.
 * MongoDB – stores comments and annotations.
 * Dash – creates the interactive web application.
 * Plotly – creates the charts displayed by Dash.
-* Requests – allows the dashboard to request data from FastAPI.
-* python-dotenv – loads configuration from the .env file.
 
